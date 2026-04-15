@@ -3,9 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Product;
-use App\Models\User;
+use App\Policies\ProductPolicy;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,14 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
-
-        Gate::define('view-product', function (User $user, Product $product): bool {
-            return $user->id === $product->user_id || $product->is_public;
-        });
-
-        Gate::define('manage-product', function (User $user, Product $product): bool {
-            return $user->id === $product->user_id;
-        });
+        Gate::policy(Product::class, ProductPolicy::class);
     }
 }
